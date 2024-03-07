@@ -1,0 +1,9 @@
+{
+  "name": "com.ez.r-for-unity",
+  "version": "1.0.0",
+  "displayName": "R for Unity",
+  "type": "tool",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.0.2"
+  }
+}
