@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using UnityEditor;
 
 namespace R.Editor.Settings
 {
-
     [CreateAssetMenu(fileName = "ResourceGenerationSettings.asset", menuName = "R/Generation Settings")]
     public class ResGenSettings : ScriptableObject
     {
@@ -13,10 +13,8 @@ namespace R.Editor.Settings
 
         private static string DefaultAssetPath => kDefaultConfigFolder + "/" + kDefaultConfigAssetName + ".asset";
 
-        public AudioController AudioControllerPrefab;
         public Object AudioFolder;
         public Object SceneFolder;
-        public GameObject UIRootPrefab;
         public TextAsset ResGenScriptTemplate;
         public TextAsset ResGenEnumTemplate;
         public TextAsset AudioClipAddressStructTemplate;
@@ -49,5 +47,19 @@ namespace R.Editor.Settings
                 return so;
             }
         }
+
+#if UNITY_EDITOR
+        public void Reset()
+        {
+            if (SceneFolder == null)
+            {
+                var defaultSceneFolderPath = Path.Combine(Application.dataPath, "Scenes");
+                if (Directory.Exists(defaultSceneFolderPath))
+                {
+                    SceneFolder = AssetDatabase.LoadAssetAtPath("Assets/Scenes", typeof(Object));
+                }
+            }
+        }
+#endif
     }
 }

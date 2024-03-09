@@ -1,15 +1,17 @@
-﻿using System.CodeDom;
+﻿using R.Editor.Utils;
+using System.CodeDom;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
-using UnityEngine;
 
 namespace R.Editor.Tags
 {
-    public class TagGenerator : ICodeGenerator
+    public class TagGenerator : CodeGenerator, ICodeGenerator
     {
-        [MenuItem("Tools/Code Generation/Tags")]
+        public const string Name = "Tags";
+
+        [MenuItem(MenuPath + Name)]
         private static void Execute()
         {
             var generator = new TagGenerator();
@@ -22,9 +24,8 @@ namespace R.Editor.Tags
                 .OrderBy(x => x)
                 .ToArray();
 
-            var compileUnit = new CodeCompileUnit();
-            var codeNamespace = new CodeNamespace();
-            var classDeclaration = new CodeTypeDeclaration("Tags")
+            var codeCompileUnit = new CodeCompileUnit();
+            var classDeclaration = new CodeTypeDeclaration(Name)
             {
                 IsClass = true,
                 TypeAttributes = TypeAttributes.Public | TypeAttributes.Sealed
@@ -35,17 +36,18 @@ namespace R.Editor.Tags
                 var field = new CodeMemberField
                 {
                     Attributes = MemberAttributes.Public | MemberAttributes.Const,
-                    Name = Utilities.GetScreamName(tag),
+                    Name = NameUtils.ToName(tag),
                     Type = new CodeTypeReference(typeof(string)),
                     InitExpression = new CodePrimitiveExpression(tag)
                 };
                 classDeclaration.Members.Add(field);
             }
 
-            codeNamespace.Types.Add(classDeclaration);
-            compileUnit.Namespaces.Add(codeNamespace);
+            _codeNamespace.Types.Add(classDeclaration);
+            codeCompileUnit.Namespaces.Add(_codeNamespace);
 
-            Utilities.GenerateToFile(compileUnit, Application.dataPath + "/Generated", "Tags.cs");
+            var path = PathUtils.GetResClassPath(Name);
+            GenerateToFile(codeCompileUnit, path);
         }
     }
 }

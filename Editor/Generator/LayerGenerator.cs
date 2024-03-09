@@ -1,4 +1,7 @@
-﻿using System.CodeDom;
+﻿using PlasticPipe.PlasticProtocol.Messages;
+using R.Editor.Utils;
+using System.CodeDom;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -7,34 +10,29 @@ using UnityEngine;
 
 namespace R.Editor.Layers
 {
-    public class LayerGenerator : ICodeGenerator
+    public class LayerGenerator : CodeGenerator, ICodeGenerator
     {
-        [MenuItem("Tools/Code Generation/Layers")]
+        public const string Name = "Layers";
+
+        [MenuItem(MenuPath + Name)]
         private static void Execute()
         {
             var generator = new LayerGenerator();
             generator.Generate();
         }
 
-        public void Generate()
+        public CodeTypeDeclaration CreateLayers(List<string> layers)
         {
-            string[] layers = InternalEditorUtility.layers
-                .OrderBy(x => x)
-                .ToArray();
-
-            var codeCompileUnit = new CodeCompileUnit();
-            var codeNamespace = new CodeNamespace();
-            var classDeclaration = new CodeTypeDeclaration("Layers")
+            var classDeclaration = new CodeTypeDeclaration(Name)
             {
                 IsClass = true,
                 TypeAttributes = TypeAttributes.Public | TypeAttributes.Sealed
             };
 
-            for (int i = 0; i < layers.Length; i++)
+            for (int i = 0; i < layers.Count; i++)
             {
                 string layer = layers[i];
-                string layerName = Utilities.GetScreamName(layer);
-                string maskName = layerName + "_MASK";
+                string layerName = NameUtils.ToName(layer);
                 int layerValue = LayerMask.NameToLayer(layer);
 
                 var layerField = new CodeMemberField(typeof(int), layerName)
@@ -43,20 +41,51 @@ namespace R.Editor.Layers
                     InitExpression = new CodePrimitiveExpression(layerValue)
                 };
 
-                var maskField = new CodeMemberField(typeof(int), maskName)
+                classDeclaration.Members.Add(layerField);
+            }
+
+            return classDeclaration;
+        }
+
+        public CodeTypeDeclaration CreateLayerNames(List<string> layers)
+        {
+            var classDeclaration = new CodeTypeDeclaration("LayerNames")
+            {
+                IsClass = true,
+                TypeAttributes = TypeAttributes.Public | TypeAttributes.Sealed
+            };
+
+            for (int i = 0; i < layers.Count; i++)
+            {
+                string layer = layers[i];
+                string layerName = NameUtils.ToName(layer);
+                var layerField = new CodeMemberField(typeof(string), layerName)
                 {
                     Attributes = MemberAttributes.Public | MemberAttributes.Const,
-                    InitExpression = new CodePrimitiveExpression(1 << layerValue)
+                    InitExpression = new CodePrimitiveExpression(layer)
                 };
 
                 classDeclaration.Members.Add(layerField);
-                classDeclaration.Members.Add(maskField);
             }
 
-            codeNamespace.Types.Add(classDeclaration);
-            codeCompileUnit.Namespaces.Add(codeNamespace);
+            return classDeclaration;
+        }
 
-            Utilities.GenerateToFile(codeCompileUnit, Application.dataPath + "/Generated", "Layers.cs");
+        public void Generate()
+        {
+            List<string> layers = InternalEditorUtility.layers
+                .OrderBy(x => x)
+                .ToList();
+
+            var codeCompileUnit = new CodeCompileUnit();
+            var layerDeclaration = CreateLayers(layers);
+            var layerNameDeclaration = CreateLayerNames(layers);
+            _codeNamespace.Types.Add(layerDeclaration);
+            _codeNamespace.Types.Add(layerNameDeclaration);
+            codeCompileUnit.Namespaces.Add(_codeNamespace);
+
+            var path = PathUtils.GetResClassPath(Name);
+            GenerateToFile(codeCompileUnit, path);
         }
     }
 }

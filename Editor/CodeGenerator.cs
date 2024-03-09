@@ -2,8 +2,8 @@
 using UnityEngine.U2D;
 using UnityEditorInternal;
 using UnityEditor;
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
+//using UnityEditor.AddressableAssets;
+//using UnityEditor.AddressableAssets.Settings;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -11,8 +11,11 @@ using System.IO;
 using System.Collections.Generic;
 using R.Editor.Utils;
 using R.Editor.Settings;
+using Microsoft.CSharp;
+using System.CodeDom.Compiler;
+using System.CodeDom;
 
-namespace R.Editor
+namespace R.Editor.Legacy
 {
     public class CodeGenerator
     {
@@ -34,10 +37,10 @@ namespace R.Editor
         [MenuItem(MenuPath + "All %#F9", priority = -10)]
         private static void GenerateAll()
         {
-            GenerateAddressable();
+            //GenerateAddressable();
             GenerateAnimatorParameters();
             GenerateAnimatorStates();
-            GenerateAudioClips();
+            //GenerateAudioClips();
             GenerateLayers();
             GenerateShaderNameIDs();
             GenerateSortingLayers();
@@ -57,6 +60,7 @@ namespace R.Editor
             WriteCode(className, contents, template);
         }
 
+        /*
         const string SoundCategory = "SoundCategory";
         [MenuItem(MenuPath + SoundCategory)]
         private static void GenerateSoundCategory()
@@ -118,6 +122,7 @@ namespace R.Editor
             string contents = NamesToContents(names);
             WriteCode(className, contents);
         }
+        */
 
         const string AnimatorParameters = "AnimatorParameters";
         [MenuItem(MenuPath + AnimatorParameters)]
@@ -137,6 +142,7 @@ namespace R.Editor
             WriteCode(className, contents);
         }
 
+        /*
         const string AudioClips = "AudioClips";
         [MenuItem(MenuPath + AudioClips)]
         private static void GenerateAudioClips()
@@ -147,6 +153,7 @@ namespace R.Editor
             string contents = AudioAttrsToContents(GetAudioClips( categories));
             WriteCode(className, contents);
         }
+        */
 
         const string Layers = "Layers";
         [MenuItem(MenuPath + Layers)]
@@ -196,6 +203,7 @@ namespace R.Editor
             WriteCode(className, contents);
         }
 
+        /*
         const string CanvasSortingOrders = "CanvasSortingOrders";
         [MenuItem(MenuPath + CanvasSortingOrders)]
         private static void GenerateCanvasSortingOrders()
@@ -215,6 +223,7 @@ namespace R.Editor
             string contents = ToContents(GetVirtualSortOrders());
             WriteCode(className, contents);
         }
+        */
 
         static string NamesToEnumContents(IEnumerable<string> enums)
         {
@@ -249,6 +258,7 @@ namespace R.Editor
             return sb.ToString();
         }
 
+        /*
         static string AudioAttrsToContents(IReadOnlyList<AudioAttribute> attrs)
         {
             var sb = new StringBuilder();
@@ -262,6 +272,7 @@ namespace R.Editor
 
             return sb.ToString();
         }
+        */
 
         static string NamesToHashContents(IReadOnlyList<string> names, HashConverter converter)
         {
@@ -353,6 +364,8 @@ namespace R.Editor
             return names.Distinct().ToList();
         }
 
+        // "[rootPath](Assets/Data/Audio)/[Scene]/[Category]/file.extension"
+        /*
         static List<string> GetVirtualSortOrders()
         {
             var rootPrefab = ResGenSettings.Default.UIRootPrefab;
@@ -370,7 +383,6 @@ namespace R.Editor
             return virtualSortOrders;
         }
 
-        // "[rootPath](Assets/Data/Audio)/[Scene]/[Category]/file.extension"
         static List<AudioAttribute> GetAudioClips(IEnumerable<string> categories)
         {
             var results = new List<AudioAttribute>();
@@ -405,6 +417,7 @@ namespace R.Editor
 
             return results;
         }
+        */
 
         static bool DoCreateDirectory(string path)
         {
@@ -470,6 +483,28 @@ namespace R.Editor
         private static string EscapeDoubleQuote(string str)
         {
             return str.Replace("\"", "\"\"");
+        }
+
+        public static void GenerateToFile(CodeCompileUnit unit, string directory, string filename)
+        {
+            var codeProvider = new CSharpCodeProvider();
+            var options = new CodeGeneratorOptions
+            {
+                BracingStyle = "C"
+            };
+
+            var writer = new StringWriter();
+            codeProvider.GenerateCodeFromCompileUnit(unit, writer, options);
+            writer.Flush();
+            string output = writer.ToString();
+
+            string directoryPath = directory;
+            string filePath = directoryPath + "/" + filename;
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            File.WriteAllText(filePath, output);
+            AssetDatabase.Refresh();
         }
     }
 }

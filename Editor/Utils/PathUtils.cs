@@ -19,12 +19,5 @@ namespace R.Editor.Utils
             var path = AssetDatabase.GetAssetPath(settings.SceneFolder);
             return new string[1] { path };
         }
-
-        public static string[] GetAudioClipFolderPath()
-        {
-            var settings = ResGenSettings.Default;
-            var path = AssetDatabase.GetAssetPath(settings.AudioFolder);
-            return new string[1] { path };
-        }
     }
 }
