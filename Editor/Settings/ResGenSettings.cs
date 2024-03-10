@@ -13,11 +13,8 @@ namespace R.Editor.Settings
 
         private static string DefaultAssetPath => kDefaultConfigFolder + "/" + kDefaultConfigAssetName + ".asset";
 
-        public Object AudioFolder;
         public Object SceneFolder;
         public TextAsset ResGenScriptTemplate;
-        public TextAsset ResGenEnumTemplate;
-        public TextAsset AudioClipAddressStructTemplate;
         public TextAsset StringConvertableStructTemplate;
         public Object ResGenClassOutputFolder;
         

@@ -49,6 +49,7 @@ namespace R.Editor.Legacy
             Debug.Log("Complete GenerateAll");
         }
 
+        /*
         const string SceneNames = "SceneNames";
         [MenuItem(MenuPath + SceneNames)]
         private static void GenerateSceneNames()
@@ -60,7 +61,6 @@ namespace R.Editor.Legacy
             WriteCode(className, contents, template);
         }
 
-        /*
         const string SoundCategory = "SoundCategory";
         [MenuItem(MenuPath + SoundCategory)]
         private static void GenerateSoundCategory()
@@ -483,28 +483,6 @@ namespace R.Editor.Legacy
         private static string EscapeDoubleQuote(string str)
         {
             return str.Replace("\"", "\"\"");
-        }
-
-        public static void GenerateToFile(CodeCompileUnit unit, string directory, string filename)
-        {
-            var codeProvider = new CSharpCodeProvider();
-            var options = new CodeGeneratorOptions
-            {
-                BracingStyle = "C"
-            };
-
-            var writer = new StringWriter();
-            codeProvider.GenerateCodeFromCompileUnit(unit, writer, options);
-            writer.Flush();
-            string output = writer.ToString();
-
-            string directoryPath = directory;
-            string filePath = directoryPath + "/" + filename;
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
-
-            File.WriteAllText(filePath, output);
-            AssetDatabase.Refresh();
         }
     }
 }
