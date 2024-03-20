@@ -22,7 +22,7 @@ namespace R.Editor
         }
 
         [MenuItem(MenuPath + "Generate All", false, int.MaxValue)]
-        private static void GenerateAll()
+        public static void GenerateAll()
         {
             Type typeDefinition = typeof(ICodeGenerator);
 
