@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 211ec697c6b7f9f4db8d584846930010, type: 3}
+  m_Name: ResourceGenerationSettings
+  m_EditorClassIdentifier: 
+  SceneFolder: {fileID: 102900000, guid: e205b8ecf480f794aa964e84ae67c752, type: 3}
+  ResGenScriptTemplate: {fileID: 4900000, guid: c7c0ba43de33aec45b08e188737ac570, type: 3}
+  StringConvertableStructTemplate: {fileID: 4900000, guid: 6ca4a4aae892b2944902089458f5483a, type: 3}
+  ResGenClassOutputFolder: {fileID: 102900000, guid: 91dae5401ebd5cd479f2b3e2d21c6b85, type: 3}
