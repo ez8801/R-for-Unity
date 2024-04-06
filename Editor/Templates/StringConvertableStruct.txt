@@ -1,7 +1,0 @@
-﻿        public readonly struct {0}
-        {{
-            readonly string _s;
-            public {0}(string s) => _s = s;
-            public static implicit operator {0}(string v) => new {0}(v);
-            public static implicit operator string({0} v) => v._s;
-        }}

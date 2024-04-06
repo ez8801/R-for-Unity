@@ -14,8 +14,6 @@ namespace R.Editor.Settings
         private static string DefaultAssetPath => kDefaultConfigFolder + "/" + kDefaultConfigAssetName + ".asset";
 
         public Object SceneFolder;
-        public TextAsset ResGenScriptTemplate;
-        public TextAsset StringConvertableStructTemplate;
         public Object ResGenClassOutputFolder;
         
         public static ResGenSettings Default
