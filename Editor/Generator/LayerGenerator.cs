@@ -1,5 +1,4 @@
-﻿using PlasticPipe.PlasticProtocol.Messages;
-using R.Editor.Utils;
+﻿using R.Editor.Utils;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,7 +73,6 @@ namespace R.Editor.Layers
         public void Generate()
         {
             List<string> layers = InternalEditorUtility.layers
-                .OrderBy(x => x)
                 .ToList();
 
             var codeCompileUnit = new CodeCompileUnit();
