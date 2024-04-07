@@ -17,6 +17,18 @@ To install this package, you need to edit your Unity project's `Packages/manifes
 }
 ```
 
+## Features
+* Generate the project's Layers, Tags, Sorting Layers and Scene Names as classes.
+* Detect to the file change and regenerate files
+
+![Watcher](Documentation~/watcher.png)
+
+## First Step
+
+![Settings](Documentation~/settings.png)
+
+![MenuItems](Documentation~/menu_item.png)
+
 ## Usage
 
 ```CSharp
